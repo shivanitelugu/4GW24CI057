@@ -1,0 +1,222 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 100  // Maximum stack size
+
+// Stack structure
+typedef struct {
+    int arr[MAX];
+    int top;
+} Stack;
+
+// Initialize the stack
+void initStack(Stack *s) {
+    s->top = -1;
+}
+
+// Check if stack is empty
+int isEmpty(Stack *s) {
+    return s->top == -1;
+}
+
+// Check if stack is full
+int isFull(Stack *s) {
+    return s->top == MAX - 1;
+}
+
+// Push an element onto stack
+void push(Stack *s, int value) {
+    if (isFull(s)) {
+        printf("Stack Overflow! Cannot push %d\n", value);
+        return;
+    }
+    s->arr[++(s->top)] = value;
+    printf("Pushed %d onto the stack.\n", value);
+}
+
+// Pop an element from stack
+int pop(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack Underflow! Cannot pop element.\n");
+        return -1;
+    }
+    int value = s->arr[s->top--];
+    printf("Popped %d from the stack.\n", value);
+    return value;
+}
+
+// Display stack horizontally
+void display(Stack *s) {
+    if (isEmpty(s)) {
+        printf("Stack is empty.\n");
+        return;
+    }
+    printf("Stack status (top -> bottom): ");
+    for (int i = s->top; i >= 0; i--) {
+        printf("%d ", s->arr[i]);
+    }
+    printf("\n");
+}
+
+// Check if a sequence is palindrome using stack (silent push)
+void checkPalindrome() {
+    int n;
+    printf("Enter the number of elements in the sequence: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid size!\n");
+        return;
+    }
+
+    int arr[n];
+    Stack s;
+    initStack(&s);
+
+    printf("Enter %d integers: ", n);
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &arr[i]);
+        s.arr[++(s.top)] = arr[i];  // Silent push
+    }
+
+    int isPalindrome = 1;
+    int reversed[n];
+    for (int i = 0; i < n; i++) {
+        reversed[i] = s.arr[s.top--]; // Silent pop
+        if (arr[i] != reversed[i]) {
+            isPalindrome = 0;
+        }
+    }
+
+    printf("Original sequence: ");
+    for (int i = 0; i < n; i++) printf("%d ", arr[i]);
+    printf("\nReversed sequence: ");
+    for (int i = 0; i < n; i++) printf("%d ", reversed[i]);
+    printf("\n");
+
+    if (isPalindrome)
+        printf("The sequence is a palindrome.\n");
+    else
+        printf("The sequence is not a palindrome.\n");
+}
+
+// Main menu-driven program
+int main() {
+    Stack s;
+    initStack(&s);
+
+    int choice, value;
+
+    while (1) {
+        printf("\n--- Stack Operations Menu ---\n");
+        printf("1. Push an element\n");
+        printf("2. Pop an element\n");
+        printf("3. Check Palindrome using Stack\n");
+        printf("4. Display Stack\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+            case 1:
+                printf("Enter value to push: ");
+                scanf("%d", &value);
+                push(&s, value);
+                break;
+            case 2:
+                pop(&s);
+                break;
+            case 3:
+                checkPalindrome();
+                break;
+            case 4:
+                display(&s);
+                break;
+            case 5:
+                printf("Exiting program. Goodbye!\n");
+                exit(0);
+            default:
+                printf("Invalid choice! Try again.\n");
+        }
+    }
+
+    return 0;
+}
+
+
+//expected output
+
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 1
+Enter value to push: 10
+Pushed 10 onto the stack.
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 1
+Enter value to push: 20
+Pushed 20 onto the stack.
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 1
+Enter value to push: 30
+Pushed 30 onto the stack.
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 4
+Stack status (top -> bottom): 30 20 10 
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 2
+Popped 30 from the stack.
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 3
+Enter the number of elements in the sequence: 2
+Enter 2 integers: 55
+45
+Original sequence: 55 45 
+Reversed sequence: 45 55 
+The sequence is not a palindrome.
+
+--- Stack Operations Menu ---
+1. Push an element
+2. Pop an element
+3. Check Palindrome using Stack
+4. Display Stack
+5. Exit
+Enter your choice: 5
+Exiting program. Goodbye!
+
+
+=== Code Execution Successful ==
