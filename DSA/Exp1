@@ -1,0 +1,80 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Define the structure for a Day
+typedef struct {
+    char *name;       // Name of the day
+    int date;         // Date of the day
+    char *activity;   // Description of activity
+} Day;
+
+// Function to create the calendar (dynamically allocates memory)
+Day* create(int n) {
+    Day *calendar = (Day *)malloc(n * sizeof(Day));
+    if (calendar == NULL) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+    return calendar;
+}
+
+// Function to read data from the user
+void read(Day *calendar, int n) {
+    char buffer[100]; // temporary buffer for reading strings
+
+    for (int i = 0; i < n; i++) {
+        printf("\nEnter name of day %d: ", i + 1);
+        scanf(" %[^\n]", buffer);
+        calendar[i].name = (char *)malloc((strlen(buffer) + 1) * sizeof(char));
+        strcpy(calendar[i].name, buffer);
+
+        printf("Enter date for %s: ", calendar[i].name);
+        scanf("%d", &calendar[i].date);
+
+        printf("Enter activity for %s: ", calendar[i].name);
+        scanf(" %[^\n]", buffer);
+        calendar[i].activity = (char *)malloc((strlen(buffer) + 1) * sizeof(char));
+        strcpy(calendar[i].activity, buffer);
+    }
+}
+
+// Function to display the calendar
+void display(Day *calendar, int n) {
+    printf("\nWeekly Activity Report:\n");
+    printf("---------------------------------------------------\n");
+    printf("%-10s %-10s %-30s\n", "Day", "Date", "Activity");
+    printf("---------------------------------------------------\n");
+
+    for (int i = 0; i < n; i++) {
+        printf("%-10s %-10d %-30s\n", calendar[i].name, calendar[i].date, calendar[i].activity);
+    }
+}
+
+// Function to free dynamically allocated memory
+void freeCalendar(Day *calendar, int n) {
+    for (int i = 0; i < n; i++) {
+        free(calendar[i].name);
+        free(calendar[i].activity);
+    }
+    free(calendar);
+}
+
+// Main function
+int main() {
+    int days = 7;
+
+    // Step 1: Create calendar
+    Day *calendar = create(days);
+
+    // Step 2: Read calendar data
+    read(calendar, days);
+
+    // Step 3: Display calendar
+    display(calendar, days);
+
+    // Step 4: Free memory
+    freeCalendar(calendar, days);
+
+    return 0;
+}
