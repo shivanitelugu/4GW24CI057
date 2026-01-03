@@ -1,0 +1,124 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Function to find the length of a string
+int strLength(char *s) {
+    int len = 0;
+    while (s[len] != '\0') len++;
+    return len;
+}
+
+// Function to read a string dynamically
+char* readString(const char* prompt) {
+    char buffer[1000];
+    printf("%s", prompt);
+    scanf(" %[^\n]", buffer);
+
+    int len = strLength(buffer);
+    char *str = (char*)malloc((len + 1) * sizeof(char));
+    if (!str) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+
+    for (int i = 0; i <= len; i++) {
+        str[i] = buffer[i]; // copy including null terminator
+    }
+
+    return str;
+}
+
+// Function to compare two strings from a given position
+int matchAt(char *str, char *pat, int pos) {
+    int i = 0;
+    while(pat[i] != '\0') {
+        if(str[pos + i] != pat[i]) return 0; // no match
+        i++;
+    }
+    return 1; // match
+}
+
+// Function to count occurrences of pattern in string
+int countPattern(char *str, char *pat) {
+    int count = 0;
+    int lenStr = strLength(str);
+    int lenPat = strLength(pat);
+
+    for(int i = 0; i <= lenStr - lenPat; i++) {
+        if(matchAt(str, pat, i)) count++;
+    }
+    return count;
+}
+
+// Function to replace all occurrences of PAT with REP in STR
+char* replacePattern(char *str, char *pat, char *rep) {
+    int lenStr = strLength(str);
+    int lenPat = strLength(pat);
+    int lenRep = strLength(rep);
+
+    int count = countPattern(str, pat);
+
+    if(count == 0) {
+        printf("\nPattern not found in the string.\n");
+        return NULL;
+    }
+
+    // Calculate new length
+    int newLen = lenStr + count * (lenRep - lenPat);
+    char *newStr = (char*)malloc((newLen + 1) * sizeof(char));
+    if(!newStr) {
+        printf("Memory allocation failed!\n");
+        exit(1);
+    }
+
+    int i = 0, j = 0;
+    while(str[i] != '\0') {
+        if(matchAt(str, pat, i)) {
+            // Copy replacement string
+            for(int k = 0; k < lenRep; k++) {
+                newStr[j++] = rep[k];
+            }
+            i += lenPat;
+        } else {
+            newStr[j++] = str[i++];
+        }
+    }
+    newStr[j] = '\0';
+    return newStr;
+}
+
+// Main program
+int main() {
+    // Step 1: Read strings
+    char *STR = readString("Enter the main string (STR): ");
+    char *PAT = readString("Enter the pattern string (PAT): ");
+    char *REP = readString("Enter the replacement string (REP): ");
+
+    // Step 2: Replace pattern
+    char *result = replacePattern(STR, PAT, REP);
+
+    // Step 3: Display result
+    if(result != NULL) {
+        printf("\nOriginal String: %s\n", STR);
+        printf("Modified String: %s\n", result);
+        free(result);
+    }
+
+    // Free allocated memory
+    free(STR);
+    free(PAT);
+    free(REP);
+
+    return 0;
+}
+
+
+
+
+//expected output
+Enter the main string (STR): sita
+Enter the pattern string (PAT): ta
+Enter the replacement string (REP): tara
+
+Original String: sita
+Modified String: sitara
