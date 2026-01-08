@@ -1,0 +1,115 @@
+package cpuscheduling;
+
+import java.util.*;
+
+class Process {
+    String pid;
+    int arrivalTime;
+    int burstTime;
+    int priority;
+    int waitingTime;
+    int turnaroundTime;
+
+    Process(String pid, int at, int bt, int pr) {
+        this.pid = pid;
+        this.arrivalTime = at;
+        this.burstTime = bt;
+        this.priority = pr;
+    }
+}
+
+public class CPUScheduler {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+
+        LinkedList<Process> processList = new LinkedList<>();
+        Queue<Process> readyQueue = new LinkedList<>();
+        PriorityQueue<Process> priorityQueue =
+                new PriorityQueue<>((p1, p2) -> p2.priority - p1.priority);
+        Stack<Process> completedStack = new Stack<>();
+
+        System.out.print("Enter number of processes: ");
+        int n = sc.nextInt();
+
+        for (int i = 0; i < n; i++) {
+            System.out.println("\nEnter details of Process " + (i + 1));
+            System.out.print("Process ID: ");
+            String pid = sc.next();
+            System.out.print("Arrival Time: ");
+            int at = sc.nextInt();
+            System.out.print("Burst Time: ");
+            int bt = sc.nextInt();
+            System.out.print("Priority: ");
+            int pr = sc.nextInt();
+
+            processList.add(new Process(pid, at, bt, pr));
+        }
+
+        // Sort by arrival time
+        processList.sort(Comparator.comparingInt(p -> p.arrivalTime));
+
+        int currentTime = 0;
+        int index = 0;
+        int totalWT = 0;
+        int totalTAT = 0;
+
+        System.out.println("\nPID\tAT\tBT\tPR\tWT\tTAT");
+
+        while (index < processList.size() || !priorityQueue.isEmpty()) {
+
+            while (index < processList.size()
+                    && processList.get(index).arrivalTime <= currentTime) {
+
+                readyQueue.add(processList.get(index));
+                index++;
+            }
+
+            while (!readyQueue.isEmpty()) {
+                priorityQueue.add(readyQueue.poll());
+            }
+
+            if (!priorityQueue.isEmpty()) {
+                Process p = priorityQueue.poll();
+
+                p.waitingTime = currentTime - p.arrivalTime;
+                p.turnaroundTime = p.waitingTime + p.burstTime;
+
+                currentTime += p.burstTime;
+
+                totalWT += p.waitingTime;
+                totalTAT += p.turnaroundTime;
+
+                completedStack.push(p);
+
+                System.out.println(
+                        p.pid + "\t" +
+                        p.arrivalTime + "\t" +
+                        p.burstTime + "\t" +
+                        p.priority + "\t" +
+                        p.waitingTime + "\t" +
+                        p.turnaroundTime
+                );
+            } else {
+                currentTime++;
+            }
+        }
+
+        // ✅ Average calculations
+        float avgWT = (float) totalWT / n;
+        float avgTAT = (float) totalTAT / n;
+
+        System.out.println("\nAverage Waiting Time = " + avgWT);
+        System.out.println("Average Turnaround Time = " + avgTAT);
+
+        System.out.println("\nCompleted Processes (Stack - LIFO):");
+        while (!completedStack.isEmpty()) {
+            System.out.println(completedStack.pop().pid);
+        }
+
+        sc.close();
+    }
+}
+
+
