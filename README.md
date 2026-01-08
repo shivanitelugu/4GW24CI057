@@ -133,7 +133,7 @@ It integrates **Operating Systems, Data Structures, and Java** into a single pra
 
 ---
 
-## 👩‍🎓 Author
+## 👩‍🎓
 **Shivani Telugu**  
 CSE(AIML) Student
 
